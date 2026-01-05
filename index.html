@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TSRBENCH: A Comprehensive Multi-task Multi-modal Time Series Reasoning Benchmark for Generalist Models</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="website/img/tsrbench-logo.svg" type="image/svg+xml">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link rel="stylesheet" href="website/css/bulma.min.css">
+    <link rel="stylesheet" href="website/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="website/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="website/css/fontawesome.all.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./website/javascript/bulma-carousel.min.js"></script>
+    <script src="./website/javascript/bulma-slider.min.js"></script>
+    <script src="./website/javascript/explorer-index.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <link href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator_bootstrap4.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.5.2/dist/js/tabulator.min.js"></script>
+    <script defer src="website/javascript/fontawesome.all.min.js"></script>
+    <!-- <script src="website/javascript/peity-vanilla.js"></script> -->
+
+
+    <!-- below we load some js scripts -->
+    <script src="website/javascript/benchmark_table.js" type="module"></script>
+    <script src="website/javascript/benchmark_table_low_level.js" type="module"></script>
+    <script src="website/javascript/tsrbench_table.js" type="module"></script>
+
+    <link rel="stylesheet" href="website/css/index.css">
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7GJ4FYMY9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-C7GJ4FYMY9');
+    </script>
+
+    <!-- MathJax script -->
+    <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script type="text/javascript">
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+
+    <noscript>
+        <p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101339888ns.gif" /></p>
+    </noscript>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+        var toggles = document.querySelectorAll('.toggle-section');
+        toggles.forEach(function(toggle) {
+            toggle.addEventListener('click', function() {
+            var content = document.getElementById(toggle.getAttribute('aria-controls'));
+            var toggleIcon = toggle.children[1].children[0];
+            content.classList.toggle('is-active');
+            if (content.classList.contains('is-active')) {
+                toggleIcon.style.transition = 'transform 0.3s ease';
+                toggleIcon.style.transform = 'rotate(180deg)';
+            } else {
+                toggleIcon.style.transition = 'transform 0.3s ease';
+                toggleIcon.style.transform = 'rotate(0deg)';
+            }
+            });
+        });
+        });
+      </script>
+
+    <style>
+        /* TSRBench styling with !important to ensure it applies */
+        .tsrbench {
+          font-variant: small-caps !important;
+          font-weight: bold !important;
+          color: #4a5d7a !important;
+        }
+        .collapse-content {
+          display: none;
+          margin-top: 10px;
+        }
+        .collapse-content.is-active {
+          display: block;
+        }
+        /* Tabulator table styling - prevent text truncation */
+        .tabulator .tabulator-header .tabulator-col .tabulator-col-content .tabulator-col-title {
+          white-space: nowrap !important;
+          overflow: visible !important;
+          text-overflow: clip !important;
+        }
+        /* .toggle-section .icon.is-small {
+          transition: transform 0.3s ease;
+        } */
+        /* .toggle-section .fa-angle-up {
+          transform: rotate(180deg);
+        } */
+      </style>
+</head>
+
+<body>
+
+  <!-- Single-line Title with Bulma's .title.is-1 is-bold (centered heading) -->
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+
+            <!-- MAIN TITLE (logo + "TSRBench:") -->
+            <h1 class="title is-1 publication-title is-bold">
+              <img src="website/img/tsrbench-logo.svg"
+                   alt="logo"
+                   style="vertical-align: middle; margin-right: 20px; position: relative; top: -15px; left: 30px"
+                   width="80"
+                   height="80" />
+              <span class="tsrbench" style="vertical-align: middle">TSRBench</span>
+            </h1>
+
+            <!-- SUBTITLE -->
+            <h2 class="title is-1 publication-title is-bold" style="margin-top:-0.7em; margin-right: 30px; margin-left: 30px;">
+              A Comprehensive Multi-task Multi-modal Time Series Reasoning Benchmark for Generalist Models
+            </h2>
+
+            <!-- Author list -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://yu-fangxu.github.io/">Fangxu Yu</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://sites.google.com/view/guoxingang">Xingang Guo</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://lingzhiyxp.github.io/" target="_blank">Lingzhi Yuan</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://mk322.github.io/">Haoqiang Kang</a><sup>3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://hzhao.ttic.edu/">Hongyu Zhao</a><sup>1</sup>,
+              </span><br>
+              <span class="author-block">
+                <a href="https://lianhui.ucsd.edu/">Lianhui Qin</a><sup>3</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://furong-huang.com/">Furong Huang</a><sup>1</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://binhu7.github.io/">Bin Hu</a><sup>2</sup>,
+              </span>
+              <span class="author-block">
+                <a href="https://tianyizhou.github.io/" target="_blank">Tianyi Zhou</a><sup>&#9993;</sup>
+              </span>
+            </div>
+            <div class="is-size-5 publication-authors" style="margin-top:1em;">
+              <span class="author-block"><sup>1</sup>University of Maryland, College Park,</span>
+              <span class="author-block"><sup>2</sup>University of Illinois Urbana-Champaign,</span>
+              <span class="author-block"><sup>3</sup>University of California, San Diego</span>
+            </div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>&#9993;</sup>Corresponding author</span>
+            </div>
+            <!-- <div class="is-size-5 publication-authors">
+              <span class="author-block" style="color:rgb(192, 54, 54);"><b>ICML 2025</b></span>
+            </div> -->
+
+            <!-- Links -->
+            <div class="column has-text-centered" style="margin-top:1.5em;">
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>&nbsp;&nbsp;
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/Yu-Fangxu/TSRBench" class="external-link button is-normal is-rounded is-dark" role="button" target="_blank">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a> &nbsp;&nbsp;
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/Yu-Fangxu/TSRBench"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon" style="display: flex; align-items: center; height: 100%;">
+                      <p style="font-size:18px; margin: 0;">&#129303;</p>
+                  </span>
+                  <span>Dataset</span>
+                </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Overview Section -->
+  <section class="section" id="overview" style="padding-top:1.5rem;">
+    <div class="container" style="max-width: 80%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; margin-bottom:1rem; font-size: 2.3em;">Overview</h2>
+      <br>
+      <div class="content has-text-justified" style="max-width: 95%; font-size: 1.2em; margin: 0 auto; line-height: 1.55;">
+        <p style="text-align:justify; color:rgb(31, 30, 30);">
+          Time series data is ubiquitous in real-world scenarios and crucial for critical applications ranging from energy management to traffic control. Consequently, the ability to reason over time series is <b>a fundamental skill for generalist models</b> to solve complex problems. However, current benchmarks for generalist models largely overlook this dimension.
+        </p>
+        <p style="text-align:justify; color:rgb(31, 30, 30);">
+          To bridge this gap, we introduce <b><span class="tsrbench">TSRBench</span></b>, a comprehensive multi-modal benchmark designed to stress-test the full spectrum of time series reasoning capabilities. <span class="tsrbench">TSRBench</span> features: 
+          (i) a diverse set of <b>4,125 problems from 13 domains</b>, categorized into 4 major dimensions: <b>Perception, Reasoning, Prediction, and Decision-Making</b>; and 
+          (ii) <b>15 tasks</b> evaluating essential reasoning capabilities (e.g., numerical reasoning, causal discovery, abductive reasoning).
+        </p>
+        <p style="text-align:justify; color:rgb(31, 30, 30);">
+          <span class="tsrbench">TSRBench</span> provides a <b>standardized evaluation platform</b> that not only highlights existing challenges but also offers valuable insights to advance generalist models.
+        </p>
+      </div>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-eight-fifths">
+          <!-- Figure 1 -->
+          <figure class="table-figure">
+            <img class="figure-image" src="website/img/main_arch.png" alt="Figure 1. Overview of TSRBench." style="max-width: 95%; text-align:center; margin-bottom:1rem;"/>
+            <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+              <b>Figure 1.</b> Overview of <span class="tsrbench">TSRBench</span>. <span class="tsrbench">TSRBench</span> evaluates generalist models across four core capabilities: Perception, Reasoning, Prediction, and Decision-Making.
+            </figcaption>
+          </figure>
+
+          <p style="text-align:justify; color:rgb(31, 30, 30); margin-top:1rem; margin-bottom:1rem; line-height: 1.55; max-width: 95%; margin: 0 auto; font-size: 1.2em;">
+            <span class="tsrbench">TSRBench</span> is designed with several key features that set it apart from existing benchmarks:
+            <b>(i) Comprehensive Coverage.</b> <span class="tsrbench">TSRBench</span> spans <b>4 major dimensions</b> with <b>15 carefully designed tasks</b> covering fundamental to advanced time series reasoning capabilities.
+            <b>(ii) Multi-modal Evaluation.</b> <span class="tsrbench">TSRBench</span> supports both <b>textual and visual representations</b> of time series data, enabling evaluation of models' ability to process and fuse information from different modalities.
+            <b>(iii) Diverse Real-world Domains.</b> With data from <b>13 domains</b> including energy, traffic, finance, and healthcare, <span class="tsrbench">TSRBench</span> ensures evaluation on practical, real-world scenarios.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benchmark Design Section -->
+  <section class="section" id="benchmark-design" style="padding-top:1.5rem;">
+    <div class="container" style="max-width: 80%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; margin-bottom: 2.5rem; font-size: 2.3em;">Benchmark Design</h2>
+      <div class="content has-text-justified" style="max-width: 95%; font-size: 1.2em; margin: 0 auto; line-height: 1.55;">
+        <h3 class="title is-4" style="text-align:left; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5em;">Four Key Perspectives</h3>
+        
+        <div style="margin-left: 1em; margin-top: 1.5em;">
+          <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em;">
+            <b>1. Time Series Perception:</b> This dimension evaluates the ability to extract meaningful patterns and insights from time series data, covering four tasks: 
+            <i>(i) Pattern Analysis</i>, <i>(ii) Noise Understanding</i>, <i>(iii) Anomaly Detection</i>, and <i>(iv) Similarity Analysis</i>.
+          </p>
+          
+          <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em;">
+            <b>2. Time Series Reasoning:</b> This dimension evaluates the ability to derive conclusions from temporal patterns and prior knowledge, covering seven tasks: 
+            <i>(i) Etiological Reasoning</i>, <i>(ii) Causal Discovery</i>, <i>(iii) Abductive Reasoning</i>, <i>(iv) Temporal Relation Reasoning</i>, 
+            <i>(v) Numerical Reasoning</i>, <i>(vi) Deductive Reasoning</i>, and <i>(vii) Inductive Reasoning</i>.
+          </p>
+          
+          <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em;">
+            <b>3. Time Series Prediction:</b> We evaluate predictive capabilities through two tasks: 
+            <i>(i) Time Series Forecasting</i> and <i>(ii) Event Prediction</i>.
+          </p>
+          
+          <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em;">
+            <b>4. Time Series Decision-Making:</b> This dimension assesses the ability of models to make decisions based on the understanding of both time series and context. 
+            We evaluate this through two aspects: <i>(i) Qualitative Decision-Making</i> and <i>(ii) Quantitative Decision-Making</i>.
+          </p>
+        </div>
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-eight-fifths">
+          <!-- Figure 2 -->
+          <figure class="table-figure">
+            <img class="figure-image" src="website/img/statistics.png" alt="Figure 2. Statistics of tasks in TSRBench." style="max-width: 30%; text-align:center; margin-bottom:1rem;"/>
+            <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+              <b>Figure 2.</b> Statistics of tasks in <span class="tsrbench">TSRBench</span>. 
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="content has-text-justified" style="max-width: 95%; font-size: 1.2em; margin: 0 auto; line-height: 1.55;">
+        <h3 class="title is-4" style="text-align:left; margin-top: 2rem; margin-bottom: 1rem; font-size: 1.5em;">Data Collection Principles</h3>
+        <p style="text-align:justify; color:rgb(31, 30, 30);">
+          The data collection in <span class="tsrbench">TSRBench</span> follows four key principles: <b>(i) High Text-Timeseries Alignment:</b> it enforces tight alignment between textual context and time series so that both are necessary for solving each problem; 
+          <b>(ii) Domain Diversity and Generalizability</b> it covers 13 diverse real-world domains to test generalizable temporal reasoning rather than narrow heuristics; 
+          <b>(iii) Verifiable and Unambiguous Ground Truth</b> it guarantees verifiable, unambiguous ground truth by relying either on high-fidelity simulations or exact extraction from data and context; 
+          and <b>(iv) Synthetic Data for Quantitative Reasoning</b> it supplements real data with carefully controlled synthetic time series (e.g., chaotic systems, algorithmic trading) wherever precise quantitative and deductive evaluation would otherwise be impossible.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Leaderboard Section -->
+  <section class="section" id="leaderboard" style="padding-top:1.5rem;">
+    <div class="container" style="max-width: 80%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; margin-bottom: 2.5rem; font-size: 2.3em;">Leaderboard</h2>
+      <div class="content has-text-justified" style="max-width: 95%; font-size: 1.2em; margin: 0 auto; line-height: 1.55;">
+        <p style="text-align:center; color:rgb(31, 30, 30); margin-bottom: 2rem;">
+          Model performance on <span class="tsrbench">TSRBench</span> across 15 tasks in 4 dimensions. For proprietary models, "(T)" denotes textual time series, "(V)" denotes visualized time series, and "(T+V)" denotes both modalities.
+        </p>
+        
+        <!-- Legend for task abbreviations
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.8em;">
+          <strong>Task Abbreviations:</strong><br>
+          <span style="display: inline-block; margin-right: 15px;"><strong>Perception:</strong> PR (Pattern Analysis), NU (Noise Understanding), AD (Anomaly Detection), SA (Similarity Analysis)</span><br>
+          <span style="display: inline-block; margin-right: 15px;"><strong>Reasoning:</strong> ER (Etiological), CD (Causal Discovery), AR (Abductive), TR (Temporal Relation), NR (Numerical), DR (Deductive), IR (Inductive)</span><br>
+          <span style="display: inline-block; margin-right: 15px;"><strong>Prediction:</strong> TSF (Time Series Forecasting), EP (Event Prediction)</span><br>
+          <span style="display: inline-block;"><strong>Decision:</strong> QualDM (Qualitative Decision-Making), QuantDM (Quantitative Decision-Making)</span>
+        </div> -->
+      </div>
+    </div>
+    
+    <!-- Table container with wider width -->
+    <div class="container" style="max-width: 95%; margin: 2rem auto 0 auto;">
+      <div style="overflow-x: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
+        <div id="tsrbench-main-table"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Findings Section -->
+  <section class="section" id="key-findings" style="padding-top:1.5rem;">
+    <div class="container" style="max-width: 80%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; margin-bottom: 2.5rem; font-size: 2.3em;">Key Findings</h2>
+      <div class="content has-text-justified" style="max-width: 95%; font-size: 1.2em; margin: 0 auto; line-height: 1.55;">
+        <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1.5em;">
+          Through extensive experiments evaluating over 30 leading proprietary and open-source LLMs, VLMs, and TSLLMs, we uncovered several key findings:
+        </p>
+
+        <!-- Finding 1: Scaling Law -->
+        <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em; background: #f5f5f5; padding: 15px; border-radius: 8px;">
+          <b>Finding 1. The scaling law still holds for most of the time series reasoning tasks on both LLMs and VLMs, except for time series prediction.</b>
+        </p>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-eight-fifths">
+            <figure class="table-figure">
+              <img class="figure-image" src="website/img/scaling_law.png" alt="Figure 3. Scaling law analysis." style="max-width: 60%; text-align:center; margin-bottom:1rem;"/>
+              <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+                <b>Figure 3.</b> The scatter plots related to overall accuracy and model sizes. Each plot illustrates the relationship between the log-scaled size of parameter numbers and the performance across all models. The left corresponds to LLMs and the right is VLMs.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- Finding 2: Task Correlation -->
+        <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em; margin-top: 2em; background: #f5f5f5; padding: 15px; border-radius: 8px;">
+          <b>Finding 2. Perception, Reasoning, and Decision tasks are highly correlated, and have weak correlation with the Prediction task.</b>
+        </p>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-eight-fifths">
+            <figure class="table-figure">
+              <img class="figure-image" src="website/img/task_correlation.png" alt="Figure 4. Task correlation analysis." style="max-width: 55%; text-align:center; margin-bottom:1rem;"/>
+              <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+                <b>Figure 4.</b> Spearman's rank correlation (ρ) between tasks. "(*)" marks correlations with p-values ≤ 0.05.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- Finding 3: Modality Complementarity -->
+        <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em; margin-top: 2em; background: #f5f5f5; padding: 15px; border-radius: 8px;">
+          <b>Finding 3. Although the textual and visual representations of time series achieve similar performance, they are strongly complementary.</b>
+        </p>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-eight-fifths">
+            <figure class="table-figure">
+              <img class="figure-image" src="website/img/intersection.png" alt="Figure 5. Modality complementarity analysis." style="max-width: 65%; text-align:center; margin-bottom:1rem;"/>
+              <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+                <b>Figure 5.</b> Analysis of modality complementarity. Left: Comparison between textual and visual time series representations. Right: Ratio of model (T+V) solutions covered by model (T) or model (V).
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <!-- Finding 4: Variance Analysis -->
+        <p style="text-align:justify; color:rgb(31, 30, 30); margin-bottom: 1em; margin-top: 2em; background: #f5f5f5; padding: 15px; border-radius: 8px;">
+          <b>Finding 4. Variance analysis decouples difficulty into two regimes: high variance indicates distillable capability gaps, whereas uniformly low variance exposes fundamental collective blind spots requiring enhanced pre-training.</b>
+        </p>
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-eight-fifths">
+            <figure class="table-figure">
+              <img class="figure-image" src="website/img/variance.png" alt="Figure 6. Performance variance analysis." style="max-width: 65%; text-align:center; margin-bottom:1rem;"/>
+              <figcaption class="figure-caption" style="font-size: 1.0em; font-style: normal;">
+                <b>Figure 6.</b> Performance distribution of evaluated models across <span class="tsrbench">TSRBench</span> tasks.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- BibTeX Section -->
+  <section class="section" id="BibTeX" style="padding-top:1.5rem;">
+    <div class="container is-max-desktop content" style="max-width: 95%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; font-size: 2.3em;">BibTeX</h2>
+      <pre style="font-size: 1.0em;">
+@inproceedings{yu2025tsrbench,
+  title={TSRBench: A Comprehensive Multi-task Multi-modal Time Series Reasoning Benchmark for Generalist Models},
+  author={Yu, Fangxu and Guo, Xingang and Yuan, Lingzhi and Kang, Haoqiang and Zhao, Hongyu and Qin, Lianhui and Huang, Furong and Hu, Bin and Zhou, Tianyi},
+  booktitle={arXiv preprint arXiv: ###},
+  year={2026}
+}
+      </pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="section" id="org-banners" style="display:flex; margin-bottom: -3rem; margin-left: 3rem; margin-right: 3rem;">
+      <a href="https://www.umd.edu/" target="blank" class="ext-link" style="display: block; margin: auto;">
+          <img class="center-block org-banner" src="website/img/umd-logo.webp" style="width: 390px; height: auto; display: block; margin: auto;">
+      </a>
+      <a href="https://illinois.edu/" target="_blank" rel="external" style="display: block; margin: auto;">
+          <img class="center-block org-banner" src="website/img/uiuc.webp" style="width: 350px; height: auto; display: block; margin: auto;">
+      </a>
+      <a href="https://ucsd.edu/" target="blank" class="ext-link" style="display: block; margin: auto;">
+          <img class="center-block org-banner" src="website/img/ucsd.svg" style="width: 390px; height: auto; display: block; margin: auto;">
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <!-- <div class="content has-text-centered"> -->
+    <div class="columns is-centered">
+        <div class="column is-9">
+          <div class="content">
+          <p style="font-size: 1.15em;">
+            This website is adapted from 
+            <a href="https://nerfies.github.io/" style="text-decoration: none;">Nerfies</a>, licensed under a 
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" style="text-decoration: none;">
+              Creative Commons Attribution-ShareAlike 4.0 International License
+            </a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+</footer>
+
+
+</body>
+</html>
