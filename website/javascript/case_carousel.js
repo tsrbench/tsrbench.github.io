@@ -1,31 +1,23 @@
 // Case Study Carousel functionality
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Question Cases data
+    // Question Cases data - only include cases with images
     const questionCases = [
         { name: 'Pattern Recognition', file: 'pattern' },
         { name: 'Anomaly Detection', file: 'anomaly' },
-        { name: 'Noise Understanding', file: 'noise' },
         { name: 'Similarity Analysis', file: 'similarity' },
         { name: 'Etiological Reasoning', file: 'etiological' },
         { name: 'Numerical Reasoning', file: 'numerical' },
-        { name: 'Temporal Relation Reasoning', file: 'temporal' },
-        { name: 'Abductive Reasoning', file: 'abductive' },
         { name: 'Deductive Reasoning', file: 'deductive' },
         { name: 'Inductive Reasoning', file: 'inductive' },
         { name: 'Causal Discovery', file: 'causal' },
-        { name: 'Time Series Forecasting', file: 'forecasting' },
-        { name: 'Event Prediction', file: 'event' },
-        { name: 'Qualitative Decision-Making', file: 'qualitative_decision' },
-        { name: 'Quantitative Decision-Making', file: 'quantitative' }
+        { name: 'Qualitative Decision-Making', file: 'qualitative' }
     ];
 
-    // Error Cases data
+    // Error Cases data - only include cases with images
     const errorCases = [
-        { name: 'Perception Error', file: 'perception_error' },
-        { name: 'Reasoning Error', file: 'reasoning_error' },
         { name: 'Domain Knowledge Error', file: 'domain_knowledge_error' },
-        { name: 'Question Understanding Error', file: 'question_error' }
+        { name: 'Question Understanding Error', file: 'question_understanding_error' }
     ];
 
     // Initialize carousels
@@ -52,8 +44,7 @@ function initCarousel(carouselId, cases, type) {
         imageContainer.innerHTML = `
             <img src="website/img/cases/${type}_${currentCase.file}.png" 
                  alt="${currentCase.name}" 
-                 class="case-image"
-                 onerror="this.onerror=null; this.src='website/img/cases/placeholder.png';">
+                 class="case-image">
         `;
         
         // Update title
