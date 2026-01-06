@@ -41,6 +41,7 @@
     <script src="website/javascript/benchmark_table.js" type="module"></script>
     <script src="website/javascript/benchmark_table_low_level.js" type="module"></script>
     <script src="website/javascript/tsrbench_table.js" type="module"></script>
+    <script src="website/javascript/case_carousel.js"></script>
 
     <link rel="stylesheet" href="website/css/index.css">
 
@@ -114,6 +115,27 @@
         /* .toggle-section .fa-angle-up {
           transform: rotate(180deg);
         } */
+        
+        /* Case Study Carousel Styles */
+        .case-carousel {
+          user-select: none;
+        }
+        .case-image {
+          max-width: 100%;
+          max-height: 600px;
+          height: auto;
+          border-radius: 4px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .case-carousel button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+        .case-carousel button:not(:disabled):hover {
+          opacity: 0.9;
+          transform: translateY(-2px);
+          transition: all 0.2s ease;
+        }
       </style>
 </head>
 
@@ -413,12 +435,71 @@
     </div>
   </section>
 
+  <!-- Case Study Section -->
+  <section class="section" id="case-study" style="padding-top:1.5rem;">
+    <div class="container is-max-desktop content" style="max-width: 95%; margin: 0 auto;">
+      <h2 class="title is-3" style="text-align:center; margin-bottom: 2.5rem; font-size: 2.3em;">Case Study</h2>
+      
+      <!-- Question Cases -->
+      <div class="box" style="padding: 2rem; margin-bottom: 3rem; background-color: #fafafa;">
+        <h3 class="title is-4" style="text-align:center; margin-bottom: 2rem; color: #4a5d7a;">Question Cases</h3>
+        <div id="question-carousel" class="case-carousel">
+          <div class="case-header">
+            <h4 class="case-title" style="font-size: 1.4em; font-weight: bold; text-align: center; margin-bottom: 1.5rem;"></h4>
+          </div>
+          <div class="case-image-container" style="text-align: center; margin-bottom: 1.5rem; min-height: 500px; display: flex; align-items: center; justify-content: center; background-color: white; border: 2px solid #e0e0e0; border-radius: 8px;">
+            <!-- Image will be inserted here by JavaScript -->
+          </div>
+          <div class="case-controls" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="button is-medium prev-case" style="background-color: #4a5d7a; color: white;">
+              <span class="icon"><i class="fas fa-arrow-left"></i></span>
+              <span>Previous</span>
+            </button>
+            <span class="case-counter" style="font-size: 1.1em; font-weight: 500;"></span>
+            <button class="button is-medium next-case" style="background-color: #4a5d7a; color: white;">
+              <span>Next</span>
+              <span class="icon"><i class="fas fa-arrow-right"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Cases -->
+      <div class="box" style="padding: 2rem; background-color: #fff5f5;">
+        <h3 class="title is-4" style="text-align:center; margin-bottom: 2rem; color: #c44242;">Error Cases</h3>
+        <div id="error-carousel" class="case-carousel">
+          <div class="case-header">
+            <h4 class="case-title" style="font-size: 1.4em; font-weight: bold; text-align: center; margin-bottom: 1.5rem;"></h4>
+          </div>
+          <div class="case-image-container" style="text-align: center; margin-bottom: 1.5rem; min-height: 500px; display: flex; align-items: center; justify-content: center; background-color: white; border: 2px solid #e0e0e0; border-radius: 8px;">
+            <!-- Image will be inserted here by JavaScript -->
+          </div>
+          <div class="case-controls" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="button is-medium prev-case" style="background-color: #c44242; color: white;">
+              <span class="icon"><i class="fas fa-arrow-left"></i></span>
+              <span>Previous</span>
+            </button>
+            <span class="case-counter" style="font-size: 1.1em; font-weight: 500;"></span>
+            <button class="button is-medium next-case" style="background-color: #c44242; color: white;">
+              <span>Next</span>
+              <span class="icon"><i class="fas fa-arrow-right"></i></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <p style="text-align: center; color: #666; font-style: italic; margin-top: 1rem;">
+        Use arrow keys (← →) or buttons to navigate through cases
+      </p>
+    </div>
+  </section>
+
   <!-- BibTeX Section -->
   <section class="section" id="BibTeX" style="padding-top:1.5rem;">
     <div class="container is-max-desktop content" style="max-width: 95%; margin: 0 auto;">
       <h2 class="title is-3" style="text-align:center; font-size: 2.3em;">BibTeX</h2>
       <pre style="font-size: 1.0em;">
-@inproceedings{yu2025tsrbench,
+@inproceedings{yu2026tsrbench,
   title={TSRBench: A Comprehensive Multi-task Multi-modal Time Series Reasoning Benchmark for Generalist Models},
   author={Yu, Fangxu and Guo, Xingang and Yuan, Lingzhi and Kang, Haoqiang and Zhao, Hongyu and Qin, Lianhui and Huang, Furong and Hu, Bin and Zhou, Tianyi},
   booktitle={arXiv preprint arXiv: ###},
