@@ -1,2 +1,2 @@
-# embodiedbench.github.io
-This is the project website for the paper "EmbodiedBench: Comprehensive Benchmarking Multi-modal Large Language Models for Vision-Driven Embodied Agents". Thanks to the Embodied Agent Interface Team for providing the template.
+# tsrbench.github.io
+This is the project website for the paper "TSRBench A Comprehensive Multi-task Multi-modal Time Series Reasoning Benchmark for Generalist Models". 
