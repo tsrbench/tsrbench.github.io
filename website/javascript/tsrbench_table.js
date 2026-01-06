@@ -122,6 +122,8 @@ fetch('website/data/tsrbench_results.json')
                             badge = '<span style="background: #50C878; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-right: 8px;">LLM</span>';
                         } else if (category === "Open-source VLM") {
                             badge = '<span style="background: #FF6B6B; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-right: 8px;">VLM</span>';
+                        } else if (category === "TSLLM") {
+                            badge = '<span style="background: #9B59B6; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px; margin-right: 8px;">TSLLM</span>';
                         }
                         
                         return badge + value;
