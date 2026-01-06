@@ -72,8 +72,8 @@ var overallFormatter = function (cell, formatterParams) {
     percent = Math.max(0, Math.min(1, percent));
     
     // Calculate color intensity - from light bronze to dark bronze
-    var lightBronze = { r: 222, g: 184, b: 135 };  // Light bronze/tan
-    var darkBronze = { r: 139, g: 90, b: 0 };      // Dark bronze/gold
+    var lightBronze = { r: 245, g: 220, b: 190 };  // Light bronze/tan
+    var darkBronze = { r: 200, g: 160, b: 100 };   // Dark bronze/gold
     
     var r = Math.round(lightBronze.r + percent * (darkBronze.r - lightBronze.r));
     var g = Math.round(lightBronze.g + percent * (darkBronze.g - lightBronze.g));
